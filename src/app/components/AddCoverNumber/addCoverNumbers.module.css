@@ -1,0 +1,98 @@
+div.container {
+  background-color: var(--foreground);
+  color: var(--text-primary);
+  padding: 40px 30px;
+  border-radius: 50px;
+  border-bottom-left-radius: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+div.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+p.inputError {
+  color: rgb(143, 55, 55);
+}
+
+p.inputHint {
+  font-size: 11px;
+}
+
+span.optional {
+  font-size: 9px;
+  margin-left: 8px;
+  color: var(--text-secondary);
+}
+
+div.loading {
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  display: flex;
+}
+
+div.loading svg {
+  display: inline-block;
+  animation: spin 4s linear infinite;
+  box-sizing: border-box;
+  border-radius: 50%;
+}
+
+div.infobox {
+  background-color: var(--info-background);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  gap: 15px;
+  margin-bottom: 30px;
+  border: 0px solid transparent;
+  border-radius: 15px;
+}
+
+p.infoboxLabel {
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+
+svg.searchIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: bottom;
+}
+
+div.setStep {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 90px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+button.textButton {
+  cursor: pointer;
+  color: var(--link-primary);
+  border: none;
+  padding: 0;
+  background: transparent;
+  text-decoration: underline;
+}
+
+button.previousStep:hover {
+  color: var(--link-primary-hover);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
