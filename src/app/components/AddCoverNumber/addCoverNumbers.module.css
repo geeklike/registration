@@ -7,6 +7,7 @@ div.container {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 div.inputGroup {
@@ -29,14 +30,14 @@ span.optional {
   color: var(--text-secondary);
 }
 
-div.loading {
+div.spacer {
   justify-content: center;
   align-items: center;
   height: 40px;
   display: flex;
 }
 
-div.loading svg {
+div.spacer svg {
   display: inline-block;
   animation: spin 4s linear infinite;
   box-sizing: border-box;

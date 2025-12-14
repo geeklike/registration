@@ -5,6 +5,7 @@ import styles from "../addCoverNumbers.module.css";
 import { coverNumberInfo, CoverNumberInfoProps } from "../AddCoverNumber";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Search, Loader } from "lucide-react";
+import StepNavigation from "./StepNavigation";
 
 export default function OriginalWorkInfo({
   info,
@@ -137,27 +138,18 @@ export default function OriginalWorkInfo({
             )}
         </div>
 
+          <div className={styles.spacer}>
         {isLoading ? (
-          <div className={styles.loading}>
             <Loader className={styles.searchIcon} />
-          </div>
         ) : null}
+          </div>
 
         {error && <p className={styles.inputError}>{error}</p>}
 
-        <div className={styles.setStep}>
-          <button
-            className={styles.textButton}
-            type="button"
-            onClick={() => setCurrentStep(currentStep - 1)}
-          >
-            Tilbage
-          </button>
-
-          <button className={styles.nextStep} type="submit">
-            Næste
-          </button>
-        </div>
+        <StepNavigation
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
+        />
       </form>
     </>
   );

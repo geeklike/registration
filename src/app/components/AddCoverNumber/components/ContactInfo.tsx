@@ -3,6 +3,7 @@
 import styles from "../addCoverNumbers.module.css";
 import { coverNumberInfo, CoverNumberInfoProps } from "../AddCoverNumber";
 import { useForm, SubmitHandler } from "react-hook-form";
+import StepNavigation from "./StepNavigation";
 
 export default function ContactInfo({
   info,
@@ -22,11 +23,14 @@ export default function ContactInfo({
   });
 
   const submitHandler: SubmitHandler<coverNumberInfo> = (data) => {
-    setInfo((prev) => ({
-      ...(prev ?? {}),
-      name: data?.name,
-      email: data?.email,
-    } as coverNumberInfo));
+    setInfo(
+      (prev) =>
+        ({
+          ...(prev ?? {}),
+          name: data?.name,
+          email: data?.email,
+        } as coverNumberInfo)
+    );
 
     setCurrentStep(currentStep + 1);
   };
@@ -82,11 +86,11 @@ export default function ContactInfo({
             <p className={styles.inputError}>{errors.email.message}</p>
           )}
         </div>
-        <div className={styles.setStep}>
-          <button className={styles.nextStep} type="submit">
-            Næste
-          </button>
-        </div>
+
+        <StepNavigation
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
+        />
       </form>
     </>
   );
