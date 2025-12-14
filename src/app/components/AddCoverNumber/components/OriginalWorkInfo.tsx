@@ -31,7 +31,9 @@ export default function OriginalWorkInfo({
   const submitHandler: SubmitHandler<CoverNumberInformation> = async (data) => {
     setError("");
 
-    if (data.linkToOriginalWork && !info?.originalWork || data.linkToOriginalWork !== info?.linkToOriginalWork) {
+    const shouldFetchOriginalWork = data.linkToOriginalWork && (!info?.originalWork || data.linkToOriginalWork !== info?.linkToOriginalWork);
+
+    if (shouldFetchOriginalWork) {
       setIsFetching(true);
       try {
         const originalWork = data.linkToOriginalWork ? await fetchOriginalWorkData(data.linkToOriginalWork) : undefined;

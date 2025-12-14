@@ -1,4 +1,4 @@
-import { OriginalWork } from "../types";
+import { CoverNumberInformation, OriginalWork } from "../types";
 
 // TODO: Replace mock data with actual API call
 const MOCK_ORIGINAL_WORK: OriginalWork = {
@@ -19,6 +19,7 @@ export async function fetchOriginalWorkData(link: string): Promise<OriginalWork>
   return new Promise((resolve) => {
     setTimeout(() => {
       // TODO: Replace with actual API call
+      console.log("Fetching original work data for link:", link);
       resolve(MOCK_ORIGINAL_WORK);
     }, 1000);
   });
@@ -29,11 +30,12 @@ export async function fetchOriginalWorkData(link: string): Promise<OriginalWork>
  * @param data - The cover number information to submit
  * @returns Promise indicating success or failure
  */
-export async function sendInfoToNMP(data: unknown): Promise<{ success: boolean }> {
+export async function sendInfoToNMP(data: CoverNumberInformation | null): Promise<{ success: boolean }> {
   // Simulate sending data to NMP
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // TODO: Replace with actual API call
     setTimeout(() => {
+        console.log("Sending data to NMP:", data);
       resolve({ success: true });
     }, 2000);
   });
