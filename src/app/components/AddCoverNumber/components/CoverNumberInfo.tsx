@@ -1,11 +1,11 @@
 "use client";
 
 import styles from "../addCoverNumbers.module.css";
-import { coverNumberInfo, CoverNumberInfoProps } from "../AddCoverNumber";
+import { CoverNumberInformation, CoverNumberInfoProps, VALIDATION_MESSAGES } from "../types";
 import { useForm, SubmitHandler } from "react-hook-form";
 import StepNavigation from "./StepNavigation";
 
-export default function ContactInfo({
+export default function CoverNumberInfo({
   info,
   setInfo,
   currentStep,
@@ -15,18 +15,19 @@ export default function ContactInfo({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<coverNumberInfo>({
+  } = useForm<CoverNumberInformation>({
     defaultValues: {
       isrc: info?.isrc ?? "",
       artistName: info?.artistName ?? "",
-    },});
-
-  const submitHandler: SubmitHandler<coverNumberInfo> = (data) => {
-    setInfo((prev) => ({
+    },
+  });
+ 
+  const submitHandler: SubmitHandler<CoverNumberInformation> = (data) => {
+    setInfo((prev: CoverNumberInformation | null) => ({
       ...(prev ?? {}),
       isrc: data?.isrc,
       artistName: data?.artistName,
-    } as coverNumberInfo));
+    } as CoverNumberInformation));
 
     setCurrentStep(currentStep + 1);
   };
@@ -40,10 +41,10 @@ export default function ContactInfo({
           <label htmlFor="isrc">ISRC</label>
           <input
             {...register("isrc", {
-              required: "ISRC er obligatorisk",
+              required: VALIDATION_MESSAGES.ISRC_REQUIRED,
               pattern: {
                 value: /[A-Z]{2}[A-Z0-9]{3}[0-9]{7}/,
-                message: "Indtast venligst en gyldig ISRC kode",
+                message: VALIDATION_MESSAGES.ISRC_INVALID,
               },
             })}
             type="text"
@@ -65,8 +66,8 @@ export default function ContactInfo({
           <label htmlFor="artistName">Dit artistnavn</label>
           <input
             {...register("artistName", {
-              required: "Artistnavn er obligatorisk",
-              minLength: { value: 1, message: "Artistnavn skal udfyldes" },
+              required: VALIDATION_MESSAGES.ARTIST_NAME_REQUIRED,
+              minLength: { value: 1, message: VALIDATION_MESSAGES.ARTIST_NAME_REQUIRED },
             })}
             type="artistName"
             id="artistName"

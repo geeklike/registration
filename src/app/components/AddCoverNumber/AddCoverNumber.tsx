@@ -2,54 +2,33 @@
 
 import styles from "./addCoverNumbers.module.css";
 import { useState } from "react";
+import { CoverNumberInformation, FORM_STEPS } from "./types";
 import CoverNumberInfo from "./components/CoverNumberInfo";
 import ContactInfo from "./components/ContactInfo";
 import OriginalWorkInfo from "./components/OriginalWorkInfo";
 import Summary from "./components/Summary";
 
-export interface coverNumberInfo {
-  name: string;
-  email: string;
-  isrc: string;
-  artistName: string;
-  linkToOriginalWork?: string;
-  originalWork?: {
-    title: string;
-    isrc: string;
-    composersAndWriters: string[];
-    musicArrangers: string[];
-    lyricists: string[];
-  };
-}
-
-export interface CoverNumberInfoProps {
-  info: coverNumberInfo | null;
-  setInfo: React.Dispatch<React.SetStateAction<coverNumberInfo | null>>;
-  currentStep: number;
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-}
-
 export default function AddCoverNumber() {
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [info, setInfo] = useState<coverNumberInfo | null>(null);
+  const [currentStep, setCurrentStep] = useState<number>(FORM_STEPS.CONTACT_INFO);
+  const [info, setInfo] = useState<CoverNumberInformation | null>(null);
 
   return (
     <div className={styles.container}>
-      {currentStep === 0 ? (
+      {currentStep === FORM_STEPS.CONTACT_INFO ? (
         <ContactInfo
           info={info}
           setInfo={setInfo}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
         />
-      ) : currentStep === 1 ? (
+      ) : currentStep === FORM_STEPS.COVER_NUMBER_INFO ? (
         <CoverNumberInfo
           info={info}
           setInfo={setInfo}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
         />
-      ) : currentStep === 2 ? (
+      ) : currentStep === FORM_STEPS.ORIGINAL_WORK_INFO ? (
         <OriginalWorkInfo
           info={info}
           setInfo={setInfo}
@@ -57,7 +36,7 @@ export default function AddCoverNumber() {
           setCurrentStep={setCurrentStep}
         />
       ) : (
-        currentStep === 3 && <Summary info={info} />
+        currentStep === FORM_STEPS.SUMMARY && <Summary info={info} />
       )}
     </div>
   );

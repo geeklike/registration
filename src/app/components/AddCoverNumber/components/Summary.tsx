@@ -1,10 +1,10 @@
 "use client";
 
 import styles from "../addCoverNumbers.module.css";
-import { coverNumberInfo } from "../AddCoverNumber";
+import { CoverNumberInformation } from "../types";
 
 interface SummaryProps {
-  info: coverNumberInfo | null;
+  info: CoverNumberInformation | null;
 }
 export default function Summary({ info }: SummaryProps) {
   return (

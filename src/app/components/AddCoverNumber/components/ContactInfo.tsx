@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "../addCoverNumbers.module.css";
-import { coverNumberInfo, CoverNumberInfoProps } from "../AddCoverNumber";
+import { CoverNumberInformation, CoverNumberInfoProps, VALIDATION_MESSAGES } from "../types";
 import { useForm, SubmitHandler } from "react-hook-form";
 import StepNavigation from "./StepNavigation";
 
@@ -15,21 +15,21 @@ export default function ContactInfo({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<coverNumberInfo>({
+  } = useForm<CoverNumberInformation>({
     defaultValues: {
       name: info?.name ?? "",
       email: info?.email ?? "",
     },
   });
-
-  const submitHandler: SubmitHandler<coverNumberInfo> = (data) => {
+ 
+  const submitHandler: SubmitHandler<CoverNumberInformation> = (data) => {
     setInfo(
-      (prev) =>
+      (prev: CoverNumberInformation | null) =>
         ({
           ...(prev ?? {}),
           name: data?.name,
           email: data?.email,
-        } as coverNumberInfo)
+        } as CoverNumberInformation)
     );
 
     setCurrentStep(currentStep + 1);
@@ -48,12 +48,12 @@ export default function ContactInfo({
           <label htmlFor="name">Navn</label>
           <input
             {...register("name", {
-              required: "Navn er obligatorisk",
+              required: VALIDATION_MESSAGES.NAME_REQUIRED,
               validate: (value) => {
                 const words = value.trim().split(/\s+/);
                 return (
                   words.length >= 2 ||
-                  "Indtast venligst både fornavn og efternavn"
+                  VALIDATION_MESSAGES.NAME_FULL
                 );
               },
             })}
@@ -70,10 +70,10 @@ export default function ContactInfo({
           <label htmlFor="email">Email</label>
           <input
             {...register("email", {
-              required: "Email er obligatorisk",
+              required: VALIDATION_MESSAGES.EMAIL_REQUIRED,
               pattern: {
                 value: /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/,
-                message: "Indtast venligst en gyldig email-adresse",
+                message: VALIDATION_MESSAGES.EMAIL_INVALID,
               },
             })}
             type="email"

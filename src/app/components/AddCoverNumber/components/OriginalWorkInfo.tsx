@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "../addCoverNumbers.module.css";
-import { coverNumberInfo, CoverNumberInfoProps } from "../AddCoverNumber";
+import { CoverNumberInformation, CoverNumberInfoProps, ERROR_MESSAGES, VALIDATION_MESSAGES } from "../types";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Search, Loader } from "lucide-react";
 import StepNavigation from "./StepNavigation";
@@ -18,7 +18,7 @@ export default function OriginalWorkInfo({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<coverNumberInfo>({
+  } = useForm<CoverNumberInformation>({
     defaultValues: {
       linkToOriginalWork: info?.linkToOriginalWork ?? "",
     },
@@ -26,7 +26,7 @@ export default function OriginalWorkInfo({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submitHandler: SubmitHandler<coverNumberInfo> = async (data) => {
+  const submitHandler: SubmitHandler<CoverNumberInformation> = async (data) => {
     setIsLoading(true);
     setError("");
 
@@ -34,9 +34,7 @@ export default function OriginalWorkInfo({
       try {
         await fetchOriginalWorkData(data.linkToOriginalWork);
       } catch (err) {
-        setError(
-          "Der opstod en fejl ved hentning af oplysninger om originalværket. Prøv igen."
-        );
+        setError(ERROR_MESSAGES.FETCH_ORIGINAL_WORK_FAILED);
       } finally {
         setIsLoading(false);
       }
@@ -45,9 +43,7 @@ export default function OriginalWorkInfo({
         await sendInfoToNMP(info);
         setCurrentStep(currentStep + 1);
       } catch (err) {
-        setError(
-          "Der opstod en fejl ved afsendelse af oplysningerne. Prøv igen."
-        );
+        setError(ERROR_MESSAGES.SEND_INFO_FAILED);
       } finally {
         setIsLoading(false);
       }
@@ -75,7 +71,7 @@ export default function OriginalWorkInfo({
           <div>
             <p className={styles.infoboxLabel}>Komponister/Forfattere</p>
             {info?.originalWork.composersAndWriters.map(
-              (composerOrWriter, index) => (
+              (composerOrWriter: string, index: number) => (
                 <p key={index}>{composerOrWriter}</p>
               )
             )}
@@ -83,14 +79,14 @@ export default function OriginalWorkInfo({
 
           <div>
             <p className={styles.infoboxLabel}>Arrangør</p>
-            {info?.originalWork.musicArrangers.map((musicArranger, index) => (
+            {info?.originalWork.musicArrangers.map((musicArranger: string, index: number) => (
               <p key={index}>{musicArranger}</p>
             ))}
           </div>
 
           <div>
             <p className={styles.infoboxLabel}>Tekstforfatter</p>
-            {info?.originalWork.lyricists.map((lyricist, index) => (
+            {info?.originalWork.lyricists.map((lyricist: string, index: number) => (
               <p key={index}>{lyricist}</p>
             ))}
           </div>
@@ -122,7 +118,7 @@ export default function OriginalWorkInfo({
             {...register("linkToOriginalWork", {
               minLength: {
                 value: 5,
-                message: "Linket skal være mindst 5 tegn langt",
+                message: VALIDATION_MESSAGES.LINK_MIN_LENGTH,
               },
             })}
             type="text"
@@ -154,14 +150,14 @@ export default function OriginalWorkInfo({
     </>
   );
 
-  function updateOriginalWork(data: coverNumberInfo) {
+  function updateOriginalWork(data: CoverNumberInformation) {
     setInfo(
       (prev) =>
         ({
           ...(prev ?? {}),
           linkToOriginalWork: data?.linkToOriginalWork,
           originalWork: data?.originalWork,
-        } as coverNumberInfo)
+        } as CoverNumberInformation)
     );
   }
   async function fetchOriginalWorkData(link: string) {
@@ -183,7 +179,7 @@ export default function OriginalWorkInfo({
           ...(info ?? {}),
           linkToOriginalWork: link,
           originalWork: originalWorkData,
-        } as coverNumberInfo);
+        } as CoverNumberInformation);
 
         setIsLoading(false);
         resolve({ success: true });
@@ -191,7 +187,7 @@ export default function OriginalWorkInfo({
     });
   }
 }
-async function sendInfoToNMP(info: coverNumberInfo | null) {
+async function sendInfoToNMP(info: CoverNumberInformation | null) {
   // Simulate sending data to NMP
   return new Promise((resolve, reject) => {
     // Simulate sending data to an API
