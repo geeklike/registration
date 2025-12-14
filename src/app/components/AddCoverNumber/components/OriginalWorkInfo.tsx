@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "../addCoverNumbers.module.css";
 import { CoverNumberInformation, CoverNumberInfoProps, ERROR_MESSAGES, VALIDATION_MESSAGES } from "../types";
+import { fetchOriginalWorkData, sendInfoToNMP } from "../services/originalWorkService";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Search, Loader } from "lucide-react";
 import StepNavigation from "./StepNavigation";
@@ -23,29 +24,37 @@ export default function OriginalWorkInfo({
       linkToOriginalWork: info?.linkToOriginalWork ?? "",
     },
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   const submitHandler: SubmitHandler<CoverNumberInformation> = async (data) => {
-    setIsLoading(true);
     setError("");
 
-    if (data.linkToOriginalWork && !info?.originalWork) {
+    if (data.linkToOriginalWork && !info?.originalWork || data.linkToOriginalWork !== info?.linkToOriginalWork) {
+      setIsFetching(true);
       try {
-        await fetchOriginalWorkData(data.linkToOriginalWork);
+        const originalWork = data.linkToOriginalWork ? await fetchOriginalWorkData(data.linkToOriginalWork) : undefined;
+        
+        updateOriginalWork({
+          ...(info ?? {}),
+          linkToOriginalWork: data.linkToOriginalWork,
+          originalWork,
+        } as CoverNumberInformation);
       } catch (err) {
         setError(ERROR_MESSAGES.FETCH_ORIGINAL_WORK_FAILED);
       } finally {
-        setIsLoading(false);
+        setIsFetching(false);
       }
     } else {
+      setIsSubmitting(true);
       try {
         await sendInfoToNMP(info);
         setCurrentStep(currentStep + 1);
       } catch (err) {
         setError(ERROR_MESSAGES.SEND_INFO_FAILED);
       } finally {
-        setIsLoading(false);
+        setIsSubmitting(false);
       }
     }
   };
@@ -71,23 +80,23 @@ export default function OriginalWorkInfo({
           <div>
             <p className={styles.infoboxLabel}>Komponister/Forfattere</p>
             {info?.originalWork.composersAndWriters.map(
-              (composerOrWriter: string, index: number) => (
-                <p key={index}>{composerOrWriter}</p>
+              (composerOrWriter: string) => (
+                <p key={composerOrWriter}>{composerOrWriter}</p>
               )
             )}
           </div>
 
           <div>
             <p className={styles.infoboxLabel}>Arrangør</p>
-            {info?.originalWork.musicArrangers.map((musicArranger: string, index: number) => (
-              <p key={index}>{musicArranger}</p>
+            {info?.originalWork.musicArrangers.map((musicArranger: string) => (
+              <p key={musicArranger}>{musicArranger}</p>
             ))}
           </div>
 
           <div>
             <p className={styles.infoboxLabel}>Tekstforfatter</p>
-            {info?.originalWork.lyricists.map((lyricist: string, index: number) => (
-              <p key={index}>{lyricist}</p>
+            {info?.originalWork.lyricists.map((lyricist: string) => (
+              <p key={lyricist}>{lyricist}</p>
             ))}
           </div>
 
@@ -135,9 +144,9 @@ export default function OriginalWorkInfo({
         </div>
 
           <div className={styles.spacer}>
-        {isLoading ? (
+        {(isFetching || isSubmitting) && (
             <Loader className={styles.searchIcon} />
-        ) : null}
+        )}
           </div>
 
         {error && <p className={styles.inputError}>{error}</p>}
@@ -150,7 +159,7 @@ export default function OriginalWorkInfo({
     </>
   );
 
-  function updateOriginalWork(data: CoverNumberInformation) {
+  function updateOriginalWork(data: CoverNumberInformation): void {
     setInfo(
       (prev) =>
         ({
@@ -160,39 +169,4 @@ export default function OriginalWorkInfo({
         } as CoverNumberInformation)
     );
   }
-  async function fetchOriginalWorkData(link: string) {
-    setIsLoading(true);
-
-    // Simulate getting data based on the link
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulate fetching data from an API based on the link
-        const originalWorkData = {
-          title: "Here Comes the Sun",
-          isrc: "GBAYE0601696",
-          composersAndWriters: ["John Lennon", "Paul McCartney"],
-          musicArrangers: ["George Martin"],
-          lyricists: ["John Lennon", "Paul McCartney"],
-        };
-
-        updateOriginalWork({
-          ...(info ?? {}),
-          linkToOriginalWork: link,
-          originalWork: originalWorkData,
-        } as CoverNumberInformation);
-
-        setIsLoading(false);
-        resolve({ success: true });
-      }, 1000);
-    });
-  }
-}
-async function sendInfoToNMP(info: CoverNumberInformation | null) {
-  // Simulate sending data to NMP
-  return new Promise((resolve, reject) => {
-    // Simulate sending data to an API
-    setTimeout(() => {
-      resolve({ success: true });
-    }, 2000);
-  });
 }

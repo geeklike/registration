@@ -29,8 +29,6 @@ export const FORM_STEPS = {
   SUMMARY: 3,
 } as const;
 
-export const STEP_COUNT = 4;
-
 export const ERROR_MESSAGES = {
   FETCH_ORIGINAL_WORK_FAILED:
     "Der opstod en fejl ved hentning af oplysninger om originalværket. Prøv igen.",
